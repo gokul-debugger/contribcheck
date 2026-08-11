@@ -5,12 +5,22 @@ build-backend = "hatchling.build"
 [project]
 name = "contribcheck"
 version = "0.1.0"
-description = "Evidence-based preflight checks for open-source GitHub issues"
+description = "Check whether a GitHub issue is genuinely ready for open-source contribution"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "Gokul Krishna" }]
-keywords = ["github", "open-source", "contributors", "cli", "fastapi"]
+keywords = [
+  "cli",
+  "contributors",
+  "developer-tools",
+  "fastapi",
+  "github",
+  "github-api",
+  "issue-tracker",
+  "open-source",
+  "open-source-contributions",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",

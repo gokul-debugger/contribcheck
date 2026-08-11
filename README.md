@@ -1,6 +1,13 @@
-# ContribCheck
+# ContribCheck: GitHub Issue Readiness Checker
 
-ContribCheck is an evidence-based preflight checker for open-source GitHub issues. It identifies blockers that issue-discovery lists often miss: dependency issues, missing base branches, existing assignments, comment claims, competing pull requests, unhealthy default-branch CI, and missing contribution guidance.
+An evidence-based CLI and API that checks whether a GitHub issue is genuinely ready for an open-source contribution.
+
+[![CI](https://github.com/gokul-debugger/contribcheck/actions/workflows/ci.yml/badge.svg)](https://github.com/gokul-debugger/contribcheck/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+ContribCheck identifies blockers that issue-discovery lists often miss: dependency issues, missing base branches, existing assignments, comment claims, competing pull requests, unhealthy default-branch CI, and missing contribution guidance.
 
 It does not predict whether a maintainer will merge a pull request. Every result is linked to observable GitHub state, and signals that cannot be verified are reported as `unknown` instead of silently passing.
 
