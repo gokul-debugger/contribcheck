@@ -1,0 +1,81 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "contribcheck"
+version = "0.1.0"
+description = "Evidence-based preflight checks for open-source GitHub issues"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Gokul Krishna" }]
+keywords = ["github", "open-source", "contributors", "cli", "fastapi"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Version Control :: Git",
+]
+dependencies = [
+  "httpx>=0.28.1,<1",
+  "pydantic>=2.11,<3",
+  "rich>=14,<15",
+  "typer>=0.16,<1",
+]
+
+[project.optional-dependencies]
+server = [
+  "fastapi>=0.116,<1",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.17,<2",
+  "pytest>=8.4,<9",
+  "pytest-asyncio>=1.1,<2",
+  "pytest-cov>=6.2,<7",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+contribcheck = "contribcheck.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/gokul-debugger/contribcheck"
+Issues = "https://github.com/gokul-debugger/contribcheck/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/contribcheck"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/contribcheck", "tests", "README.md", "LICENSE", "CONTRIBUTING.md"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["contribcheck"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
