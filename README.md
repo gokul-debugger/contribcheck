@@ -11,7 +11,11 @@ ContribCheck identifies blockers that issue-discovery lists often miss: dependen
 
 It does not predict whether a maintainer will merge a pull request. Every result is linked to observable GitHub state, and signals that cannot be verified are reported as `unknown` instead of silently passing.
 
-## Example
+## Real-World Example
+
+Two open issues from the same repository can look equally available while having very different readiness states.
+
+### Blocked by a prerequisite
 
 ```bash
 contribcheck inspect https://github.com/sigma67/ytmusicapi/issues/986 \
@@ -33,6 +37,33 @@ Next actions
 - Ask the maintainer to create or clarify the required base branch.
 - Read the repository contribution guide before creating a branch.
 ```
+
+ContribCheck prevents work from starting too early: the contributor is assigned, but the required dependency and base branch are not ready.
+
+### Ready for contribution
+
+```bash
+contribcheck inspect https://github.com/sigma67/ytmusicapi/issues/941
+```
+
+```text
+get_song() can return stale likeStatus right after rate_song()
+https://github.com/sigma67/ytmusicapi/issues/941
+Verdict: READY
+
+PASS  Dependencies        No open blockers reported.
+PASS  Assignment          The issue is unassigned.
+PASS  Comment claims      No other contributor appears to have claimed it.
+PASS  Competing PRs       No open pull request referencing this issue was found.
+PASS  Default branch CI   Latest runs for 4 workflow(s) are green.
+PASS  Maintainer response A maintainer first replied after approximately 8 hours.
+
+Next actions
+- Read the repository contribution guide before creating a branch.
+- Comment with a concise implementation plan before starting work.
+```
+
+Here the evidence supports beginning the contribution workflow, while still recommending coordination with the maintainer.
 
 ## Why It Exists
 
