@@ -197,6 +197,12 @@ uv run pytest --cov=contribcheck --cov-report=term-missing
 
 Tests use a mocked GitHub transport and do not consume API quota.
 
+## Contributing
+
+Contributions are welcome. Start with the [good first issues](https://github.com/gokul-debugger/contribcheck/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) or browse tasks marked [help wanted](https://github.com/gokul-debugger/contribcheck/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22).
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md), comment with a short implementation plan, and wait for confirmation before starting work that changes a public contract.
+
 ## Current Limitations
 
 - Comment-claim detection is conservative text matching, not proof of ownership.

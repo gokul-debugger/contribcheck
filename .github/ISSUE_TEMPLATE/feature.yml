@@ -1,0 +1,45 @@
+name: Feature request
+description: Propose a focused improvement to ContribCheck.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What contributor workflow is difficult or incomplete today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the user-visible behavior without prescribing every implementation detail.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and examples
+      description: Add issue links, sample commands, or expected output when useful.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe workarounds or smaller approaches you considered.
+
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Project principles
+      options:
+        - label: The proposed result can be explained with observable evidence.
+          required: true
+        - label: The proposal does not require write access to inspected repositories.
+          required: true
+        - label: I searched existing issues for overlapping proposals.
+          required: true
