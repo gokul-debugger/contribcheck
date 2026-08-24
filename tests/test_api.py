@@ -53,7 +53,7 @@ async def test_inspect_endpoint_rejects_invalid_reference() -> None:
         response = await client.post("/v1/inspect", json={"url": "not-an-issue"})
 
     assert response.status_code == 400
-    assert "github.com issue URL" in response.json()["detail"]
+    assert "HTTP(S) issue URL" in response.json()["detail"]
 
 
 def test_bearer_token_parser_is_strict() -> None:

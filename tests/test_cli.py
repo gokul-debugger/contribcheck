@@ -21,17 +21,30 @@ def _report(status: OverallStatus = OverallStatus.READY) -> InspectionReport:
 
 def test_inspect_json_output(monkeypatch: pytest.MonkeyPatch) -> None:
     async def fake_inspect(
-        reference: str, *, actor: str | None, token: str | None
+        reference: str,
+        *,
+        actor: str | None,
+        token: str | None,
+        base_url: str | None = None,
     ) -> InspectionReport:
         assert reference == "owner/repo#7"
         assert actor == "gokul-debugger"
         assert token is None
+        assert base_url == "https://github.example/api/v3"
         return _report()
 
     monkeypatch.setattr("contribcheck.cli._inspect", fake_inspect)
     result = runner.invoke(
         app,
-        ["inspect", "owner/repo#7", "--actor", "gokul-debugger", "--json"],
+        [
+            "inspect",
+            "owner/repo#7",
+            "--actor",
+            "gokul-debugger",
+            "--json",
+            "--base-url",
+            "https://github.example/api/v3",
+        ],
     )
 
     assert result.exit_code == 0
@@ -40,7 +53,11 @@ def test_inspect_json_output(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_fail_on_blocked_returns_exit_code_two(monkeypatch: pytest.MonkeyPatch) -> None:
     async def fake_inspect(
-        reference: str, *, actor: str | None, token: str | None
+        reference: str,
+        *,
+        actor: str | None,
+        token: str | None,
+        base_url: str | None = None,
     ) -> InspectionReport:
         return _report(OverallStatus.BLOCKED)
 

@@ -186,7 +186,7 @@ class IssueAnalyzer:
                 [
                     Evidence(
                         text=branch,
-                        url=_url(f"https://github.com/{target.full_name}/tree/{branch}"),
+                        url=_url(f"https://{target.host}/{target.full_name}/tree/{branch}"),
                     )
                 ],
             )
@@ -348,7 +348,9 @@ class IssueAnalyzer:
             [
                 Evidence(
                     text=path,
-                    url=_url(f"https://github.com/{target.full_name}/blob/{default_branch}/{path}"),
+                    url=_url(
+                        f"https://{target.host}/{target.full_name}/blob/{default_branch}/{path}"
+                    ),
                 )
             ],
         )

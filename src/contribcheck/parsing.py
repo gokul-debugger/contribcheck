@@ -32,17 +32,21 @@ def parse_issue_reference(value: str) -> IssueTarget:
         )
 
     parsed = urlparse(candidate)
-    if parsed.scheme not in {"http", "https"} or parsed.hostname not in {
-        "github.com",
-        "www.github.com",
-    }:
-        raise InvalidIssueURLError("Use a github.com issue URL or owner/repository#number.")
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        raise InvalidIssueURLError("Use an HTTP(S) issue URL or owner/repository#number.")
+    if parsed.username or parsed.password:
+        raise InvalidIssueURLError("Issue URLs must not contain embedded credentials.")
 
     parts = [part for part in parsed.path.split("/") if part]
     if len(parts) != 4 or parts[2] != "issues" or not parts[3].isdigit():
-        raise InvalidIssueURLError("The URL must point to a GitHub issue, not a repository or PR.")
+        raise InvalidIssueURLError("The URL must point to an issue, not a repository or PR.")
 
-    return IssueTarget(owner=parts[0], repository=parts[1], number=int(parts[3]))
+    return IssueTarget(
+        owner=parts[0],
+        repository=parts[1],
+        number=int(parts[3]),
+        host=parsed.netloc.casefold(),
+    )
 
 
 def extract_base_branch(body: str | None) -> str | None:
