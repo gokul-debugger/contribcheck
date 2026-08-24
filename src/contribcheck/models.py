@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, computed_field
 
 
 class StrictModel(BaseModel):
@@ -47,6 +47,7 @@ class IssueTarget(StrictModel):
 
         return f"{self.owner}/{self.repository}"
 
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def url(self) -> str:
         """Return the canonical browser URL."""

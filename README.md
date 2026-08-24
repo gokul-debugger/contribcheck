@@ -201,7 +201,11 @@ pip install -e '.[server]'
 contribcheck serve
 ```
 
-Open `http://127.0.0.1:8000/docs`, or call the API directly:
+Open `http://127.0.0.1:8000/` for the browser interface or `http://127.0.0.1:8000/docs` for the interactive API documentation. The browser interface sends only the issue reference and optional actor to the local API. It does not accept, store, or log GitHub tokens.
+
+![ContribCheck web interface](docs/contribcheck-ui.png)
+
+Call the API directly:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/v1/inspect \

@@ -26,6 +26,16 @@ async def test_health_endpoint() -> None:
     assert response.json()["status"] == "ok"
 
 
+async def test_root_serves_web_interface() -> None:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/")
+
+    assert response.status_code == 200
+    assert "ContribCheck" in response.text
+    assert "/v1/inspect" in response.text
+    assert "Authorization" not in response.text
+
+
 async def test_inspect_endpoint_returns_typed_report(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -46,6 +56,7 @@ async def test_inspect_endpoint_returns_typed_report(
     assert response.status_code == 200
     assert response.json()["status"] == "ready"
     assert response.json()["target"]["number"] == 7
+    assert response.json()["target"]["url"] == "https://github.com/owner/repo/issues/7"
 
 
 async def test_inspect_endpoint_rejects_invalid_reference() -> None:
