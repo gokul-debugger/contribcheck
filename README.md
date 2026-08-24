@@ -142,6 +142,23 @@ contribcheck inspect owner/repository#123 --markdown --output report.md
 
 Markdown reports include the issue title and URL, verdict, check summaries, linked evidence, and next actions. `--markdown` and `--json` cannot be used together. Existing terminal output remains the default.
 
+Inspect several candidates from a text file while preserving input order:
+
+```text
+# candidates.txt
+sigma67/ytmusicapi#986
+https://github.com/plotly/plotly.js/issues/7750
+```
+
+```bash
+contribcheck batch candidates.txt --actor your-username
+contribcheck batch candidates.txt --json --fail-on caution
+```
+
+Batch JSON uses a stable top-level object with `schema_version`, ordered `results`, and a `summary` containing total, success, failure, and verdict counts. Each failed item is reported independently instead of discarding successful inspections. Batch concurrency defaults to four and can be changed with `--concurrency`.
+
+Batch exit codes are `0` when processing completes without reaching the configured threshold, `1` when input or processing fails for at least one item, and `2` when a successful report reaches the configured `--fail-on` threshold.
+
 ### GitHub Enterprise Server
 
 Set the API endpoint with `GITHUB_API_URL`, or override it for one command with `--base-url`:
