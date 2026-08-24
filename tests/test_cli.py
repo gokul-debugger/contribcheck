@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from click import unstyle
 from pydantic import HttpUrl
 from typer.testing import CliRunner
 
@@ -138,7 +139,8 @@ def test_inspect_output_requires_structured_format() -> None:
     result = runner.invoke(app, ["inspect", "owner/repo#7", "--output", "report.txt"])
 
     assert result.exit_code == 2
-    assert "requires --json or --markdown" in result.output
+    normalized_output = " ".join(unstyle(result.output).split())
+    assert "requires --json or --markdown" in normalized_output
 
 
 def test_fail_on_blocked_returns_exit_code_two(monkeypatch: pytest.MonkeyPatch) -> None:
