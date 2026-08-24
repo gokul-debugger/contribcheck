@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
@@ -88,6 +88,33 @@ class InspectionReport(StrictModel):
             if result.key == key:
                 return result
         raise KeyError(key)
+
+
+class BatchItem(StrictModel):
+    """One ordered result from a batch inspection."""
+
+    reference: str
+    report: InspectionReport | None = None
+    error: str | None = None
+
+
+class BatchSummary(StrictModel):
+    """Stable aggregate counts for a batch inspection."""
+
+    total: int
+    succeeded: int
+    failed: int
+    ready: int
+    caution: int
+    blocked: int
+
+
+class BatchReport(StrictModel):
+    """Machine-readable batch output with a versioned top-level shape."""
+
+    schema_version: Literal[1] = 1
+    results: list[BatchItem]
+    summary: BatchSummary
 
 
 class InspectionRequest(StrictModel):
