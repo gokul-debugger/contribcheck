@@ -3,9 +3,10 @@
 An evidence-based CLI and API that checks whether a GitHub issue is genuinely ready for an open-source contribution.
 
 [![CI](https://github.com/gokul-debugger/contribcheck/actions/workflows/ci.yml/badge.svg)](https://github.com/gokul-debugger/contribcheck/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/contribcheck?logo=pypi&logoColor=white)](https://pypi.org/project/contribcheck/)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/gokul-debugger/contribcheck/blob/main/LICENSE)
 
 ContribCheck identifies blockers that issue-discovery lists often miss: dependency issues, missing base branches, existing assignments, comment claims, competing pull requests, unhealthy default-branch CI, and missing contribution guidance.
 
@@ -98,10 +99,10 @@ The overall result is one of:
 ContribCheck requires Python 3.11 or newer.
 
 ```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install -e .
+pipx install contribcheck
 ```
+
+Alternatively, install it into an existing Python environment with `pip install contribcheck`. The optional web service is available with `pip install "contribcheck[server]"`.
 
 Public GitHub requests work without authentication, but GitHub applies a much smaller anonymous rate limit. Set a token for regular use:
 
@@ -203,7 +204,7 @@ contribcheck serve
 
 Open `http://127.0.0.1:8000/` for the browser interface or `http://127.0.0.1:8000/docs` for the interactive API documentation. The browser interface sends only the issue reference and optional actor to the local API. It does not accept, store, or log GitHub tokens.
 
-![ContribCheck web interface](docs/contribcheck-ui.png)
+![ContribCheck web interface](https://raw.githubusercontent.com/gokul-debugger/contribcheck/main/docs/contribcheck-ui.png)
 
 Call the API directly:
 
@@ -243,7 +244,7 @@ Tests use a mocked GitHub transport and do not consume API quota.
 
 Contributions are welcome. Start with the [good first issues](https://github.com/gokul-debugger/contribcheck/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) or browse tasks marked [help wanted](https://github.com/gokul-debugger/contribcheck/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22).
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md), comment with a short implementation plan, and wait for confirmation before starting work that changes a public contract.
+Read [CONTRIBUTING.md](https://github.com/gokul-debugger/contribcheck/blob/main/CONTRIBUTING.md), comment with a short implementation plan, and wait for confirmation before starting work that changes a public contract.
 
 ## Current Limitations
 

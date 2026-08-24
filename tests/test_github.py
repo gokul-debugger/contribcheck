@@ -5,6 +5,7 @@ import json
 import httpx
 import pytest
 
+from contribcheck import __version__
 from contribcheck.exceptions import GitHubRateLimitError
 from contribcheck.github import API_VERSION, GitHubClient, normalize_api_base_url
 from contribcheck.models import IssueTarget
@@ -17,6 +18,7 @@ async def test_client_sends_version_and_authentication_headers() -> None:
     async def handler(request: httpx.Request) -> httpx.Response:
         assert request.headers["X-GitHub-Api-Version"] == API_VERSION
         assert request.headers["Authorization"] == "Bearer secret"
+        assert request.headers["User-Agent"] == f"contribcheck/{__version__}"
         return httpx.Response(200, json={"default_branch": "main"})
 
     async with GitHubClient(token="secret", transport=httpx.MockTransport(handler)) as client:
