@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import os
 from enum import StrEnum
+from pathlib import Path
 from typing import Annotated
 
 import httpx
@@ -52,6 +53,14 @@ def inspect(
         bool,
         typer.Option("--json", help="Print the complete report as JSON."),
     ] = False,
+    markdown_output: Annotated[
+        bool,
+        typer.Option("--markdown", help="Print the report as GitHub-flavored Markdown."),
+    ] = False,
+    output: Annotated[
+        Path | None,
+        typer.Option("--output", help="Write structured output to this file."),
+    ] = None,
     base_url: Annotated[
         str | None,
         typer.Option(help="GitHub API endpoint; overrides GITHUB_API_URL."),
@@ -63,16 +72,34 @@ def inspect(
 ) -> None:
     """Inspect one public GitHub issue."""
 
+    if json_output and markdown_output:
+        raise typer.BadParameter("--json and --markdown are mutually exclusive.")
+    if output and not (json_output or markdown_output):
+        raise typer.BadParameter("--output requires --json or --markdown.")
+
     try:
         report = asyncio.run(_inspect(reference, actor=actor, token=token, base_url=base_url))
-    except (ContribCheckError, httpx.HTTPError, ValueError) as error:
+    except (ContribCheckError, httpx.HTTPError, OSError, ValueError) as error:
         console.print(f"[bold red]Inspection failed:[/bold red] {error}", highlight=False)
         raise typer.Exit(code=1) from error
 
     if json_output:
-        typer.echo(report.model_dump_json(indent=2))
+        rendered = report.model_dump_json(indent=2)
+    elif markdown_output:
+        rendered = _render_markdown(report)
     else:
         _render_report(report)
+        rendered = None
+
+    if rendered is not None:
+        try:
+            if output:
+                output.write_text(f"{rendered}\n", encoding="utf-8")
+            else:
+                typer.echo(rendered)
+        except OSError as error:
+            console.print(f"[bold red]Output failed:[/bold red] {error}", highlight=False)
+            raise typer.Exit(code=1) from error
 
     if fail_on == FailOn.BLOCKED and report.status == OverallStatus.BLOCKED:
         raise typer.Exit(code=2)
@@ -169,6 +196,42 @@ def _render_report(report: InspectionReport) -> None:
     console.print("\n[bold]Next actions[/bold]")
     for action in report.next_actions:
         console.print(f"- {action}")
+
+
+def _render_markdown(report: InspectionReport) -> str:
+    """Render a report without terminal styling or ANSI escape sequences."""
+
+    lines = [
+        f"# {_markdown_cell(report.title)}",
+        "",
+        f"Issue: [{report.target.url}]({report.target.url})",
+        "",
+        f"## Verdict: {report.status.value.upper()}",
+        "",
+        "| Status | Check | Finding |",
+        "| --- | --- | --- |",
+    ]
+    for check in report.checks:
+        lines.append(
+            f"| {check.status.value.upper()} | {_markdown_cell(check.title)} | "
+            f"{_markdown_cell(check.summary)} |"
+        )
+        for evidence in check.evidence:
+            text = _markdown_cell(evidence.text)
+            if evidence.url:
+                url = str(evidence.url)
+                text = f"[{text}]({url})"
+            lines.append(f"|  | Evidence | {text} |")
+
+    lines.extend(["", "## Next actions", ""])
+    lines.extend(f"- {_markdown_cell(action)}" for action in report.next_actions)
+    return "\n".join(lines)
+
+
+def _markdown_cell(value: str) -> str:
+    """Escape text that is inserted into a Markdown table cell."""
+
+    return value.replace("\\", "\\\\").replace("|", "\\|").replace("\n", " ")
 
 
 if __name__ == "__main__":
