@@ -6,7 +6,7 @@ import httpx
 import pytest
 
 from contribcheck.exceptions import GitHubRateLimitError
-from contribcheck.github import API_VERSION, GitHubClient
+from contribcheck.github import API_VERSION, GitHubClient, normalize_api_base_url
 from contribcheck.models import IssueTarget
 
 TARGET = IssueTarget(owner="owner", repository="repo", number=7)
@@ -23,6 +23,31 @@ async def test_client_sends_version_and_authentication_headers() -> None:
         repository = await client.get_repository(TARGET)
 
     assert repository["default_branch"] == "main"
+
+
+@pytest.mark.asyncio
+async def test_explicit_api_url_overrides_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GITHUB_API_URL", "https://env.example/api/v3")
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        assert str(request.url).startswith("https://explicit.example/api/v3/")
+        return httpx.Response(200, json={"default_branch": "main"})
+
+    async with GitHubClient(
+        base_url="https://explicit.example/api/v3/",
+        transport=httpx.MockTransport(handler),
+    ) as client:
+        await client.get_repository(TARGET)
+
+
+def test_normalize_api_base_url_rejects_credentials_and_query() -> None:
+    assert (
+        normalize_api_base_url("https://github.example/api/v3/") == "https://github.example/api/v3"
+    )
+    with pytest.raises(ValueError):
+        normalize_api_base_url("https://user:secret@github.example/api/v3")
+    with pytest.raises(ValueError):
+        normalize_api_base_url("https://github.example/api/v3?token=secret")
 
 
 @pytest.mark.asyncio

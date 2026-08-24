@@ -133,6 +133,18 @@ contribcheck inspect owner/repository#123 --fail-on caution
 
 Exit codes are `0` for a completed inspection, `1` for an operational error, and `2` when the configured readiness threshold is reached.
 
+### GitHub Enterprise Server
+
+Set the API endpoint with `GITHUB_API_URL`, or override it for one command with `--base-url`:
+
+```bash
+export GITHUB_API_URL="https://github.example.com/api/v3"
+contribcheck inspect https://github.example.com/team/project/issues/123
+contribcheck inspect team/project#123 --base-url https://github.example.com/api/v3
+```
+
+The precedence is CLI option, `GITHUB_API_URL`, then `https://api.github.com`. The endpoint must be HTTP or HTTPS and cannot contain credentials, query parameters, or fragments. Tokens are sent only to the configured API endpoint.
+
 ## Python SDK
 
 ```python

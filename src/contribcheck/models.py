@@ -39,6 +39,7 @@ class IssueTarget(StrictModel):
     owner: str
     repository: str
     number: int = Field(gt=0)
+    host: str = "github.com"
 
     @property
     def full_name(self) -> str:
@@ -50,7 +51,7 @@ class IssueTarget(StrictModel):
     def url(self) -> str:
         """Return the canonical browser URL."""
 
-        return f"https://github.com/{self.full_name}/issues/{self.number}"
+        return f"https://{self.host}/{self.full_name}/issues/{self.number}"
 
 
 class Evidence(StrictModel):

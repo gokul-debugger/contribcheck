@@ -11,6 +11,7 @@ from contribcheck.parsing import comment_claims_work, extract_base_branch, parse
     [
         ("https://github.com/sigma67/ytmusicapi/issues/986", "sigma67", "ytmusicapi", 986),
         ("https://www.github.com/org/repo/issues/12?tab=comments", "org", "repo", 12),
+        ("https://git.example.com/org/repo/issues/12", "org", "repo", 12),
         ("gokul-debugger/contribcheck#1", "gokul-debugger", "contribcheck", 1),
     ],
 )
@@ -22,12 +23,20 @@ def test_parse_issue_reference(reference: str, owner: str, repository: str, numb
     assert target.number == number
 
 
+def test_parse_issue_reference_preserves_enterprise_host() -> None:
+    target = parse_issue_reference("https://git.example.com/org/repo/issues/12")
+
+    assert target.host == "git.example.com"
+    assert target.url == "https://git.example.com/org/repo/issues/12"
+
+
 @pytest.mark.parametrize(
     "reference",
     [
         "https://github.com/owner/repo",
         "https://github.com/owner/repo/pull/1",
-        "https://example.com/owner/repo/issues/1",
+        "ftp://example.com/owner/repo/issues/1",
+        "https://user:secret@example.com/owner/repo/issues/1",
         "owner/repo#0",
     ],
 )

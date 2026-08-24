@@ -52,6 +52,10 @@ def inspect(
         bool,
         typer.Option("--json", help="Print the complete report as JSON."),
     ] = False,
+    base_url: Annotated[
+        str | None,
+        typer.Option(help="GitHub API endpoint; overrides GITHUB_API_URL."),
+    ] = None,
     fail_on: Annotated[
         FailOn,
         typer.Option(help="Return a non-zero exit code at this readiness threshold."),
@@ -60,7 +64,7 @@ def inspect(
     """Inspect one public GitHub issue."""
 
     try:
-        report = asyncio.run(_inspect(reference, actor=actor, token=token))
+        report = asyncio.run(_inspect(reference, actor=actor, token=token, base_url=base_url))
     except (ContribCheckError, httpx.HTTPError, ValueError) as error:
         console.print(f"[bold red]Inspection failed:[/bold red] {error}", highlight=False)
         raise typer.Exit(code=1) from error
@@ -113,8 +117,14 @@ def main(
     """ContribCheck CLI."""
 
 
-async def _inspect(reference: str, *, actor: str | None, token: str | None) -> InspectionReport:
-    async with GitHubClient(token=token) as client:
+async def _inspect(
+    reference: str,
+    *,
+    actor: str | None,
+    token: str | None,
+    base_url: str | None = None,
+) -> InspectionReport:
+    async with GitHubClient(token=token, base_url=base_url) as client:
         resolved_actor = actor or os.getenv("GITHUB_ACTOR")
         return await IssueAnalyzer(client).inspect(reference, actor=resolved_actor)
 

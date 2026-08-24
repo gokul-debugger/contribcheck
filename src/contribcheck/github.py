@@ -6,7 +6,7 @@ import asyncio
 import os
 from collections.abc import Mapping
 from typing import Any, Self, cast
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit, urlunsplit
 
 import httpx
 
@@ -14,6 +14,7 @@ from contribcheck.exceptions import GitHubAPIError, GitHubRateLimitError
 from contribcheck.models import IssueTarget, JsonObject
 
 API_VERSION = "2026-03-10"
+DEFAULT_API_URL = "https://api.github.com"
 TRANSIENT_STATUSES = {429, 500, 502, 503, 504}
 
 
@@ -24,12 +25,15 @@ class GitHubClient:
         self,
         token: str | None = None,
         *,
-        base_url: str = "https://api.github.com",
+        base_url: str | None = None,
         timeout: float = 15.0,
         max_retries: int = 2,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
         resolved_token = token if token is not None else os.getenv("GITHUB_TOKEN")
+        resolved_base_url = normalize_api_base_url(
+            base_url if base_url is not None else os.getenv("GITHUB_API_URL")
+        )
         headers = {
             "Accept": "application/vnd.github+json",
             "User-Agent": "contribcheck/0.1.0",
@@ -39,7 +43,7 @@ class GitHubClient:
             headers["Authorization"] = f"Bearer {resolved_token}"
 
         self._client = httpx.AsyncClient(
-            base_url=base_url,
+            base_url=resolved_base_url,
             headers=headers,
             timeout=timeout,
             transport=transport,
@@ -213,3 +217,23 @@ class GitHubClient:
         if not isinstance(value, list) or not all(isinstance(item, dict) for item in value):
             raise GitHubAPIError(502, "Expected a list of JSON objects", endpoint="response")
         return cast(list[JsonObject], value)
+
+
+def normalize_api_base_url(value: str | None) -> str:
+    """Validate and normalize a GitHub API endpoint."""
+
+    candidate = (value or DEFAULT_API_URL).strip()
+    parsed = urlsplit(candidate)
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not parsed.hostname
+        or parsed.username
+        or parsed.password
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise ValueError(
+            "GitHub API URL must be an HTTP(S) URL without credentials, query parameters, "
+            "or fragments."
+        )
+    return urlunsplit((parsed.scheme, parsed.netloc, parsed.path.rstrip("/"), "", ""))
