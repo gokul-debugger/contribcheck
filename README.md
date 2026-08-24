@@ -133,6 +133,15 @@ contribcheck inspect owner/repository#123 --fail-on caution
 
 Exit codes are `0` for a completed inspection, `1` for an operational error, and `2` when the configured readiness threshold is reached.
 
+Render a portable GitHub-flavored Markdown report:
+
+```bash
+contribcheck inspect owner/repository#123 --markdown
+contribcheck inspect owner/repository#123 --markdown --output report.md
+```
+
+Markdown reports include the issue title and URL, verdict, check summaries, linked evidence, and next actions. `--markdown` and `--json` cannot be used together. Existing terminal output remains the default.
+
 ### GitHub Enterprise Server
 
 Set the API endpoint with `GITHUB_API_URL`, or override it for one command with `--base-url`:
