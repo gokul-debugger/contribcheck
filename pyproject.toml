@@ -24,7 +24,9 @@ keywords = [
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
+  "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -57,13 +59,23 @@ contribcheck = "contribcheck.cli:app"
 
 [project.urls]
 Homepage = "https://github.com/gokul-debugger/contribcheck"
+Documentation = "https://github.com/gokul-debugger/contribcheck#readme"
 Issues = "https://github.com/gokul-debugger/contribcheck/issues"
+Releases = "https://github.com/gokul-debugger/contribcheck/releases"
+Source = "https://github.com/gokul-debugger/contribcheck"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/contribcheck"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/contribcheck", "tests", "README.md", "LICENSE", "CONTRIBUTING.md"]
+include = [
+  "src/contribcheck",
+  "tests",
+  "docs/RELEASING.md",
+  "README.md",
+  "LICENSE",
+  "CONTRIBUTING.md",
+]
 
 [tool.ruff]
 line-length = 100

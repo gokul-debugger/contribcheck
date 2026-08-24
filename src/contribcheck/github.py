@@ -10,6 +10,7 @@ from urllib.parse import quote, urlsplit, urlunsplit
 
 import httpx
 
+from contribcheck import __version__
 from contribcheck.exceptions import GitHubAPIError, GitHubRateLimitError
 from contribcheck.models import IssueTarget, JsonObject
 
@@ -36,7 +37,7 @@ class GitHubClient:
         )
         headers = {
             "Accept": "application/vnd.github+json",
-            "User-Agent": "contribcheck/0.1.0",
+            "User-Agent": f"contribcheck/{__version__}",
             "X-GitHub-Api-Version": API_VERSION,
         }
         if resolved_token:
