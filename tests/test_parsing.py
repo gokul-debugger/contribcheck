@@ -62,6 +62,8 @@ def test_extract_base_branch(body: str | None, expected: str | None) -> None:
     "body",
     [
         "I'd like to work on this issue.",
+        "I\u2019d like to take this one.",
+        "I\u2019m working on this now.",
         "I am working on this now.",
         "Please assign this to me.",
         "I can pick up this task.",
@@ -76,8 +78,11 @@ def test_comment_claims_work_detects_explicit_claims(body: str) -> None:
     [
         "This also happens to me.",
         "Would anyone like to work on this?",
+        "Is anyone already working on this?",
+        "I\u2019d be happy to help with the regression tests.",
         "Thanks for fixing this.",
         "> I'd like to work on this issue.\n\nHas this contributor started?",
+        "> I\u2019d like to take this one.\n\nIs this still available?",
         "```text\nI am working on this now.\n```\nIs this still current?",
     ],
 )
