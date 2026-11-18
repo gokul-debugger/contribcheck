@@ -21,6 +21,7 @@ Create a GitHub environment named `pypi`. Add required-reviewer protection befor
 1. Confirm `main` is clean and CI is passing.
 2. Set the same release version in `pyproject.toml` and `src/contribcheck/__init__.py`.
 3. Update `uv.lock` when the project version or dependencies change.
+   Update `CHANGELOG.md` with the release notes and confirm that it is included in the source distribution.
 4. Run the full local quality suite.
 5. Build both distributions and inspect their contents.
 6. Create an annotated `vX.Y.Z` tag from the intended commit.
