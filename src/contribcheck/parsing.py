@@ -63,7 +63,8 @@ def extract_base_branch(body: str | None) -> str | None:
 def comment_claims_work(body: str) -> bool:
     """Return whether a comment contains a reasonably explicit work claim."""
 
-    normalized = " ".join(_unquoted_markdown(body).casefold().split())
+    visible_text = _unquoted_markdown(body).replace("\u2019", "'")
+    normalized = " ".join(visible_text.casefold().split())
     patterns = (
         r"\bi(?:'d| would) like to (?:work on|take|pick up)\b",
         r"\bi(?:'m| am) (?:working on|taking|picking up)\b",
